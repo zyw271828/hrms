@@ -2,36 +2,17 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>HRMS</title>
-    <meta name="description" content="" />
-    <meta name="viewport" content="width=device-width" />
-    <base href="/" />
-    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
-    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
-    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+    <div th:replace="fragments/header :: header-css" />
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-md navbar-light bg-light mb-4 border">
-        <a class="navbar-brand" href="/">HRMS</a>
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="/register">Register</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/login">Login</a></li>
-            </ul>
-        </div>
-    </nav>
+    <div th:replace="fragments/header :: header" />
     <main role="main" class="container">
         <div class="pb-2 mb-2 border-bottom">
             <div class="jumbotron">
                 <h1 class="display-3">Hello.</h1>
                 <p class="lead">Welcome to Human Resource Management System.</p>
-                <a class="btn btn-lg btn-primary" href="/login" role="button">Login »</a>
+                <a class="btn btn-lg btn-primary" th:href="@{/login}" role="button">Login »</a>
             </div>
         </div>
     </main>
