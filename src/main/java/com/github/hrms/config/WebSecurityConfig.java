@@ -33,11 +33,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     @Override
     public UserDetailsService userDetailsService() {
-        User.UserBuilder users = User.withDefaultPasswordEncoder();
         InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-        // TODO: Do not store plain text passwords in the source code.
-        manager.createUser(users.username("user").password("password").roles("USER").build());
-        manager.createUser(users.username("admin").password("password").roles("USER", "ADMIN").build());
+        manager.createUser(User.withUsername("user")
+                .password("{scrypt}$e0801$WF5L/Gal2M3DuUr8uHKCCZzSAdSN2t4VcoSzUXHwG+W8aAOHFKbzxRBGhzaKEslDzLOumkwHpXTztWqVcWcpnA==$TjA5jXhcXvMMukcaNjPhPpTM4Veh/lRK4W52Ucjdxeg=")
+                .roles("USER")
+                .build());
+        manager.createUser(User.withUsername("admin")
+                .password("{scrypt}$e0801$m09hi7tA1FIoYBIP+rIMzYJr0gyDW6ZtuW17wfaOWWD7mcZsjsBwgWV4Q6rJXdKLhsXc/9i7ZhmSPIbWVm9RMA==$IpufFT7llwrK/Z/UhZG6n7LQ7A7YJJMPSlANUTGwh4w=")
+                .roles("USER", "ADMIN")
+                .build());
         return manager;
     }
 }
