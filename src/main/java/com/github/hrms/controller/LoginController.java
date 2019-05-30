@@ -56,7 +56,7 @@ public class LoginController {
     }
 
     @RequestMapping(value = "/admin", method = RequestMethod.GET)
-    public ModelAndView home() {
+    public ModelAndView admin() {
         ModelAndView modelAndView = new ModelAndView();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
@@ -64,6 +64,16 @@ public class LoginController {
                 "Hello, " + user.getName() + " " + user.getLastName());
         modelAndView.addObject("adminMessage", "You have logged in as an administrator.");
         modelAndView.setViewName("admin");
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/user", method = RequestMethod.GET)
+    public ModelAndView user() {
+        ModelAndView modelAndView = new ModelAndView();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findUserByEmail(auth.getName());
+        modelAndView.addObject("userName", "Hello, " + user.getName() + " " + user.getLastName());
+        modelAndView.setViewName("user");
         return modelAndView;
     }
 }
