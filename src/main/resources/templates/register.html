@@ -11,26 +11,29 @@
         <div class="pb-2 mb-2 border-bottom">
             <h2>Register your account.</h2>
         </div>
-        <form th:action="@{/register/add}" method="post">
+        <form autocomplete="off" action="#" th:action="@{/register}" th:object="${user}" method="post"
+            class="form-horizontal" role="form">
             <fieldset>
                 <div class="form-group">
-                    <label for="id_username">Username</label>
-                    <input type="text" name="username" id="username" class="form-control input-lg"
-                        placeholder="Username" required="true" autofocus="true" />
+                    <label th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="validation-message"></label>
+                    <input type="text" id="name" th:field="*{name}" placeholder="Name" class="form-control input-lg"/>
                 </div>
                 <div class="form-group">
-                    <label for="id_email">Email</label>
-                    <input type="text" name="email" id="email" class="form-control input-lg" placeholder="Email"
-                        required="true" />
+                    <label th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" class="validation-message"></label>
+                    <input type="text" id="lastname" th:field="*{lastName}" placeholder="Last Name" class="form-control input-lg"/>
                 </div>
                 <div class="form-group">
-                    <label for="id_password">Password</label>
-                    <input type="password" name="password" id="password" class="form-control input-lg"
-                        placeholder="Password" required="true" />
+                    <label th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="validation-message"></label>
+                    <input type="text" id="email" th:field="*{email}" placeholder="Email" class="form-control input-lg"/>    
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="btn btn-primary">Register</button>
+                    <label th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="validation-message"></label>
+                    <input type="password" id="password" th:field="*{password}" placeholder="Password" class="form-control input-lg"/>    
                 </div>
+                <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Register</button>
+                </div>
+                <p class="text-success" th:inline="text" th:utext="${successMessage}"></p>
             </fieldset>
         </form>
     </main>

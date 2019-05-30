@@ -1,47 +1,70 @@
 package com.github.hrms.config;
 
-import org.springframework.context.annotation.Bean;
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+    @Autowired
+    private SCryptPasswordEncoder encoder;
+
+    @Autowired
+    private DataSource dataSource;
+
+    @Value("${spring.queries.users-query}")
+    private String usersQuery;
+
+    @Value("${spring.queries.roles-query}")
+    private String rolesQuery;
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth
+            .jdbcAuthentication()
+            .usersByUsernameQuery(usersQuery)
+            .authoritiesByUsernameQuery(rolesQuery)
+            .dataSource(dataSource)
+            .passwordEncoder(encoder);
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
         http
             .authorizeRequests()
-                .antMatchers("/", "/register/**", "/webjars/**").permitAll()
-                .antMatchers("/admin/**").hasAnyRole("ADMIN")
-                .antMatchers("/user/**").hasAnyRole("USER")
-                .anyRequest().authenticated()
-                .and()
+                .antMatchers("/").permitAll()
+                .antMatchers("/login").permitAll()
+                .antMatchers("/register").permitAll()
+                .antMatchers("/admin").hasAuthority("ADMIN")
+                .antMatchers("/user").hasAuthority("USER").anyRequest()
+                .authenticated().and().csrf().disable()
             .formLogin()
-                .loginPage("/login")
-                .permitAll()
+                .loginPage("/login").failureUrl("/login?error=true")
+                .defaultSuccessUrl("/user")
+                .usernameParameter("email")
+                .passwordParameter("password")
                 .and()
             .logout()
-                .permitAll();
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logoutSuccessUrl("/").and().exceptionHandling()
+                .accessDeniedPage("/access-denied");
     }
 
-    @Bean
     @Override
-    public UserDetailsService userDetailsService() {
-        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-        manager.createUser(User.withUsername("user")
-                .password("{scrypt}$e0801$WF5L/Gal2M3DuUr8uHKCCZzSAdSN2t4VcoSzUXHwG+W8aAOHFKbzxRBGhzaKEslDzLOumkwHpXTztWqVcWcpnA==$TjA5jXhcXvMMukcaNjPhPpTM4Veh/lRK4W52Ucjdxeg=")
-                .roles("USER")
-                .build());
-        manager.createUser(User.withUsername("admin")
-                .password("{scrypt}$e0801$m09hi7tA1FIoYBIP+rIMzYJr0gyDW6ZtuW17wfaOWWD7mcZsjsBwgWV4Q6rJXdKLhsXc/9i7ZhmSPIbWVm9RMA==$IpufFT7llwrK/Z/UhZG6n7LQ7A7YJJMPSlANUTGwh4w=")
-                .roles("USER", "ADMIN")
-                .build());
-        return manager;
+    public void configure(WebSecurity web) throws Exception {
+        web
+            .ignoring()
+                .antMatchers("/webjars/**");
     }
 }

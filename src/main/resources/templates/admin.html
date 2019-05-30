@@ -11,9 +11,10 @@
         <div class="pb-2 mb-2 border-bottom">
             <h2>Admin test page</h2>
         </div>
-        <p class="lead" th:inline="text">Hello, [[${#httpServletRequest.remoteUser}]].</p>
-        <form th:action="@{/logout}" method="post">
-            <button name="submit" class="btn btn-primary">Sign Out</button>
+        <p class="lead" th:inline="text" th:utext="${userName}"></p>
+        <p class="lead" th:inline="text" th:utext="${adminMessage}"></p>
+        <form th:action="@{/logout}" method="get">
+            <button class="btn btn-danger" name="register" type="Submit">Logout</button>
         </form>
     </main>
 </body>
