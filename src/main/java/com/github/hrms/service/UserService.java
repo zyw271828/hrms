@@ -2,6 +2,7 @@ package com.github.hrms.service;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 
 import com.github.hrms.dao.RoleRepository;
 import com.github.hrms.dao.UserRepository;
@@ -28,6 +29,10 @@ public class UserService {
 
     public User findUserByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    public List<User> findAll() {
+        return userRepository.findAll();
     }
 
     public User saveUser(User user) {

@@ -63,6 +63,7 @@ public class LoginController {
         modelAndView.addObject("userName",
                 "Hello, " + user.getName() + " " + user.getLastName());
         modelAndView.addObject("adminMessage", "You have logged in as an administrator.");
+        modelAndView.addObject("allUsers", userService.findAll());
         modelAndView.setViewName("admin");
         return modelAndView;
     }
